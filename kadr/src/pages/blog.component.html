@@ -1,0 +1,65 @@
+<section class="archive-hero">
+  <div class="wrap">
+    <p class="eyebrow"><lucide-icon [img]="icons.BookOpen" [size]="17" /> مدونة كادر</p>
+    <h1>مقالات التصوير</h1>
+    <p>دروس وتجارب في الإضاءة والتكوين واستخدام الكاميرا.</p>
+  </div>
+</section>
+
+<section class="section archive wrap" aria-label="أرشيف المقالات">
+  <div class="filter-bar">
+    <div class="search-field">
+      <lucide-icon [img]="icons.Search" [size]="20" />
+      <input #searchBox type="search" aria-label="ابحث في المقالات" placeholder="ابحث عن مقال..." [value]="search()"
+        (input)="update({ q: searchBox.value || null, page: null }, true)" />
+    </div>
+    <div class="category-field">
+      <select aria-label="تصنيف المقالات" [ngModel]="category()"
+        (ngModelChange)="update({ category: $event || null, page: null })">
+        <option value="">كل التصنيفات</option>
+        @for (name of categories; track name) { <option [value]="name">{{ name }}</option> }
+      </select>
+      <lucide-icon [img]="icons.ChevronDown" [size]="18" />
+    </div>
+  </div>
+
+  <div class="results-bar" #results>
+    <p aria-live="polite" class="result-count">عدد المقالات <strong>{{ filtered().length }}</strong></p>
+    <div class="view-switch" role="group" aria-label="طريقة العرض">
+      <button type="button" aria-label="عرض شبكي" title="عرض شبكي" [attr.aria-pressed]="view() === 'grid'"
+        (click)="update({ view: null })"><lucide-icon [img]="icons.LayoutGrid" [size]="19" /></button>
+      <button type="button" aria-label="عرض قائمة" title="عرض قائمة" [attr.aria-pressed]="view() === 'list'"
+        (click)="update({ view: 'list' })"><lucide-icon [img]="icons.List" [size]="21" /></button>
+    </div>
+  </div>
+
+  @if (visiblePosts().length) {
+    <div class="post-grid" [class.post-list]="view() === 'list'">
+      @for (post of visiblePosts(); track post.slug) {
+        <app-post-card [post]="post" />
+      }
+    </div>
+  } @else {
+    <div class="empty">
+      <lucide-icon [img]="icons.Search" [size]="29" />
+      <h2>مفيش مقالات مطابقة</h2>
+      <p>جرّب كلمة بحث مختلفة أو اختار تصنيف تاني.</p>
+      <button class="button button-outline" type="button" (click)="update({ q: null, category: null, page: null })">امسح البحث والفلترة</button>
+    </div>
+  }
+
+  @if (pages().length > 1) {
+    <nav class="pagination" aria-label="صفحات المقالات">
+      <button type="button" aria-label="الصفحة السابقة" [disabled]="page() === 1" (click)="goToPage(page() - 1, results)">
+        <lucide-icon [img]="icons.ChevronRight" [size]="19" />
+      </button>
+      @for (number of pages(); track number) {
+        <button type="button" [attr.aria-label]="'صفحة ' + number" [attr.aria-current]="number === page() ? 'page' : null"
+          (click)="goToPage(number, results)">{{ number }}</button>
+      }
+      <button type="button" aria-label="الصفحة التالية" [disabled]="page() === pageCount()" (click)="goToPage(page() + 1, results)">
+        <lucide-icon [img]="icons.ChevronLeft" [size]="19" />
+      </button>
+    </nav>
+  }
+</section>

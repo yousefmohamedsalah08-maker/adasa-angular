@@ -1,0 +1,44 @@
+<section class="home-hero">
+  <img class="hero-photo" src="/photos/hero.jpg" alt="" fetchpriority="high" />
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow"><lucide-icon [img]="camera" [size]="17" /> مدونة التصوير الفوتوغرافي</p>
+      <h1>شوف العالم<br /><em>من كادر تاني.</em></h1>
+      <p class="hero-description">من أول لقطة لحد آخر تفصيلة. اتعلم التصوير وجرب أفكار جديدة بالعدسة اللي معاك.</p>
+      <div class="hero-actions">
+        <a routerLink="/blog" class="button button-primary"><lucide-icon [img]="book" [size]="19" /> استكشف المقالات</a>
+        <a href="#topics" class="button button-ghost">تصفح التصنيفات</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" aria-labelledby="latest-title">
+  <div class="section-heading">
+    <div>
+      <h2 id="latest-title">أحدث المقالات</h2>
+      <p>أفكار وتمارين تقدر تجربها في جولتك الجاية.</p>
+    </div>
+    <a routerLink="/blog" class="button button-outline">كل المقالات</a>
+  </div>
+  <div class="post-grid">
+    @for (post of latest; track post.slug) {
+      <app-post-card [post]="post" />
+    }
+  </div>
+</section>
+
+<section id="topics" class="topic-section" aria-labelledby="topic-title">
+  <div class="wrap section">
+    <div class="section-heading"><h2 id="topic-title">تصفح حسب الموضوع</h2></div>
+    <div class="topic-grid">
+      @for (topic of topics; track topic.name) {
+        <a class="topic" routerLink="/blog" [queryParams]="{ category: topic.name }">
+          <lucide-icon [img]="topic.icon" [size]="24" />
+          <strong>{{ topic.name }}</strong>
+          <span>{{ topic.count }} مقالات</span>
+        </a>
+      }
+    </div>
+  </div>
+</section>

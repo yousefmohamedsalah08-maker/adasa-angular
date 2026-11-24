@@ -1,0 +1,41 @@
+@if (post(); as article) {
+  <article class="post-detail wrap">
+    <nav class="breadcrumbs" aria-label="مسار الصفحة">
+      <a routerLink="/">الرئيسية</a><span aria-hidden="true">/</span>
+      <a routerLink="/blog">المقالات</a><span aria-hidden="true">/</span>
+      <span aria-current="page">{{ article.title }}</span>
+    </nav>
+    <header class="detail-heading">
+      <a class="tag" routerLink="/blog" [queryParams]="{ category: article.category }">{{ article.category }}</a>
+      <h1>{{ article.title }}</h1>
+      <p>{{ article.excerpt }}</p>
+      <div class="detail-meta">
+        <span><lucide-icon [img]="icons.UserRound" [size]="17" /> {{ article.author }}</span>
+        <span><lucide-icon [img]="icons.CalendarDays" [size]="17" /> {{ article.date | date:'d MMMM y':undefined:'ar-EG' }}</span>
+        <span><lucide-icon [img]="icons.Clock3" [size]="17" /> {{ article.minutes }} دقائق قراءة</span>
+      </div>
+    </header>
+    <img class="detail-photo" [src]="article.image" [alt]="article.alt" fetchpriority="high" />
+    <div class="article-text">
+      @for (section of article.sections; track section.title) {
+        <section>
+          <h2>{{ section.title }}</h2>
+          <p>{{ section.text }}</p>
+        </section>
+      }
+      <a class="button button-outline" routerLink="/blog">رجوع للمقالات</a>
+    </div>
+  </article>
+  @if (related().length) {
+    <section class="topic-section">
+      <div class="wrap section">
+        <div class="section-heading"><h2>مقالات من نفس التصنيف</h2></div>
+        <div class="post-grid">
+          @for (item of related(); track item.slug) { <app-post-card [post]="item" /> }
+        </div>
+      </div>
+    </section>
+  }
+} @else {
+  <app-not-found />
+}
